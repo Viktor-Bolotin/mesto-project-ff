@@ -8,28 +8,29 @@
 
 // @todo: Вывести карточки на страницу
 
-for(let i=0; i<initialCards.length; i++) {
 const cardTemplate = document.querySelector('#card-template').content;
+let cardNumder = 0
+const readyCards = []
 const cardShow = document.querySelector('.places__list');
 
-const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+const createCard = function() {
 
-cardElement.querySelector('.card__image').src = initialCards[i].link;
-cardElement.querySelector('.card__image').alt = initialCards[i].name;
-cardElement.querySelector('.card__title').textContent = initialCards[i].name;
+  const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+  cardElement.querySelector('.card__image').src = initialCards[cardNumder].link;
+  cardElement.querySelector('.card__image').alt = initialCards[cardNumder].name;
+  cardElement.querySelector('.card__title').textContent = initialCards[cardNumder].name;
+  cardNumder++;
+  readyCards.push(cardElement);
 
-cardShow.append(cardElement);
-}
-
-let DeleteButtonMassive = document.querySelectorAll('.card__delete-button')
-
-let DeleteListener = function(DeleteButton) {
-  DeleteButton.addEventListener('click', function() {
-    let DeleteCard = DeleteButton.closest('.places__item')
-    DeleteCard.remove()
+  const deleteButton = cardElement.querySelector('.card__delete-button');
+  deleteButton.addEventListener('click', function() {
+    const deleteCard = deleteButton.closest('.places__item')
+    deleteCard.remove()
   })
+
+  return cardElement;
 }
 
-DeleteButtonMassive.forEach(function(item) {
-  DeleteListener(item);
-})
+initialCards.forEach(createCard)
+
+cardShow.append(...readyCards)

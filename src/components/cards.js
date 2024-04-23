@@ -1,70 +1,51 @@
-import { cardName, cardLink, cardShow, formCard, popupImage, page, popupCaption } from "../index";
-import { closePopup, openPopup, closePopupForEscape, closePopupForOverlay } from "./modal";
+import {
+  closePopup,
+  openPopup,
+  closePopupForEscape,
+  closePopupForOverlay,
+} from "./modal";
 
-export const cardTemplate = document.querySelector('#card-template').content;
+export const cardTemplate = document.querySelector("#card-template").content;
 export let cardElement
+export const cardSection = document.querySelector(".places__list");
+export const popupTypeNewCard = document.querySelector(".popup_type_new-card");
+export const formCard = popupTypeNewCard.querySelector(".popup__form");
+export const cardName = document.querySelector(".popup__input_type_card-name");
+export const cardLink = document.querySelector(".popup__input_type_url");
 
 // Функции внутри карточек
 export function deleteFunc(element) {
-  element.closest('.places__item').remove()
+  element.closest(".places__item").remove();
 }
 
 export function likeCard(button) {
-  button.classList.toggle('card__like-button_is-active')
-}
-
-export function popupPlace(evt) {
-  if (evt.target.tagName === 'IMG') {
-  const targetImage = evt.target
-  const targetPicture = targetImage.src
-  const targetName = targetImage.alt
-  popupImage.src = targetPicture
-  popupImage.alt = targetName
-  popupCaption.textContent = targetImage.alt
-  const popupTypeImage = document.querySelector('.popup_type_image')
-  openPopup(popupTypeImage)
-  }
+  button.classList.toggle("card__like-button_is-active");
 }
 
 // Создание подготовленных карточек
-export function createCard(item, deleteFunc, likeCard, popupPlace) {
+export function createCard(item, deleteFunc, likeCard, CreatePopupPlace) {
 
-  cardElement = cardTemplate.querySelector('.card').cloneNode(true); 
+  cardElement = cardTemplate.querySelector(".card").cloneNode(true);
+  const cardImage = cardElement.querySelector('.card__image')
+  const cardTitle =  cardElement.querySelector(".card__title")
 
-  cardElement.querySelector('.card__image').src = item.link;
-  cardElement.querySelector('.card__image').alt = item.name;
-  cardElement.querySelector('.card__title').textContent = item.name;
-
-  const deleteButton = cardElement.querySelector('.card__delete-button');
-  deleteButton.addEventListener('click', function() {
-    deleteFunc(deleteButton)
+  cardImage.src = item.link;
+  cardImage.alt = item.name;
+  cardTitle.textContent = item.name;
+  console.log('hello')
+  const deleteButton = cardElement.querySelector(".card__delete-button");
+  deleteButton.addEventListener("click", function () {
+    deleteFunc(deleteButton);
   });
 
-  const likeButton = cardElement.querySelector('.card__like-button');
-  likeButton.addEventListener('click', function() {
+  const likeButton = cardElement.querySelector(".card__like-button");
+  likeButton.addEventListener("click", function () {
     likeCard(likeButton);
   });
 
-  cardElement.addEventListener('click', function(evt) {
-    popupPlace(evt);
-  })
+  cardImage.addEventListener("click", function (evt) {
+   CreatePopupPlace(evt);
+  });
 
   return cardElement;
 }
-
-// Добавление новых карточек
-export function handleFormSubmitCard(evt) {
-  evt.preventDefault();
-  const cardNew = {}
-  cardNew.name = cardName.value;
-  cardNew.link = cardLink.value;
-  createCard(cardNew, deleteFunc, likeCard, popupPlace)
-  cardShow.prepend(cardElement)
-  formCard.reset()
-  closePopup()
-}
-
-
-
-
-

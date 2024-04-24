@@ -35,6 +35,7 @@ const profileAddButton = document.querySelector(".profile__add-button");
 
 profileEditButton.addEventListener("click", function () {
   openPopup(popupTypeEdit);
+  updateProfileInformation();
 });
 
 profileAddButton.addEventListener("click", function () {
@@ -57,11 +58,14 @@ jobInput.setAttribute("value", profileDescription.textContent);
 
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  nameInput.textContent = profileName.textContent;
-  jobInput.textContent = profileDescription.textContent;
   profileName.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   closePopup();
+}
+
+function updateProfileInformation () {
+  nameInput.textContent = profileName.textContent;
+  jobInput.textContent = profileDescription.textContent;
 }
 
 profileEditForm.addEventListener("submit", handleProfileFormSubmit);

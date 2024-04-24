@@ -1,15 +1,6 @@
-import {
-  closePopup,
-  openPopup,
-  closePopupForEscape,
-  closePopupForOverlay,
-} from "./modal";
-
 export const cardTemplate = document.querySelector("#card-template").content;
-export let cardElement
 export const cardSection = document.querySelector(".places__list");
 export const popupTypeNewCard = document.querySelector(".popup_type_new-card");
-export const formCard = popupTypeNewCard.querySelector(".popup__form");
 export const cardName = document.querySelector(".popup__input_type_card-name");
 export const cardLink = document.querySelector(".popup__input_type_url");
 
@@ -23,16 +14,14 @@ export function likeCard(button) {
 }
 
 // Создание подготовленных карточек
-export function createCard(item, deleteFunc, likeCard, CreatePopupPlace) {
-
-  cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-  const cardImage = cardElement.querySelector('.card__image')
-  const cardTitle =  cardElement.querySelector(".card__title")
+export function createCard(item, deleteFunc, likeCard, handleImageClick) {
+  const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
+  const cardImage = cardElement.querySelector(".card__image");
+  const cardTitle = cardElement.querySelector(".card__title");
 
   cardImage.src = item.link;
   cardImage.alt = item.name;
   cardTitle.textContent = item.name;
-  console.log('hello')
   const deleteButton = cardElement.querySelector(".card__delete-button");
   deleteButton.addEventListener("click", function () {
     deleteFunc(deleteButton);
@@ -43,9 +32,7 @@ export function createCard(item, deleteFunc, likeCard, CreatePopupPlace) {
     likeCard(likeButton);
   });
 
-  cardImage.addEventListener("click", function (evt) {
-   CreatePopupPlace(evt);
-  });
+  cardImage.addEventListener("click", () => handleImageClick(item));
 
   return cardElement;
 }

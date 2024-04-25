@@ -13,13 +13,13 @@ import { openPopup, closePopup, popups } from "./components/modal";
 
 // Функция добавления карт на страницу
 function renderCard(item, method = "append") {
-  cardSection[method](item);
+  const cardElement = createCard(item, deleteFunc, likeCard, handleImageClick);
+  cardSection[method](cardElement);
 }
 
 // Генадий, большое спасибо, что помогли разобраться с cardElement! Я теперь понял, как это должно работать :)
-initialCards.forEach((card) => {
-  const cardElement = createCard(card, deleteFunc, likeCard, handleImageClick);
-  renderCard(cardElement, "append");
+initialCards.forEach((item) => {
+  renderCard(item, "append");
 });
 
 // Добавление плавности открытия попапов
@@ -53,9 +53,6 @@ const profileEditForm = document.forms["edit-profile"];
 const nameInput = document.querySelector(".popup__input_type_name");
 const jobInput = document.querySelector(".popup__input_type_description");
 
-nameInput.setAttribute("value", profileName.textContent);
-jobInput.setAttribute("value", profileDescription.textContent);
-
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   profileName.textContent = nameInput.value;
@@ -64,8 +61,8 @@ function handleProfileFormSubmit(evt) {
 }
 
 function updateProfileInformation () {
-  nameInput.textContent = profileName.textContent;
-  jobInput.textContent = profileDescription.textContent;
+  nameInput.setAttribute("value", profileName.textContent);
+  jobInput.setAttribute("value", profileDescription.textContent);
 }
 
 profileEditForm.addEventListener("submit", handleProfileFormSubmit);
@@ -78,13 +75,7 @@ function handleFormSubmitCard(evt) {
   const cardNew = {};
   cardNew.name = cardName.value;
   cardNew.link = cardLink.value;
-  const cardElement = createCard(
-    cardNew,
-    deleteFunc,
-    likeCard,
-    handleImageClick
-  );
-  renderCard(cardElement, "prepend");
+  renderCard(cardNew, "prepend");
   formNewPlace.reset();
   closePopup();
 }

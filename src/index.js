@@ -17,7 +17,6 @@ function renderCard(item, method = "append") {
   cardSection[method](cardElement);
 }
 
-// Генадий, большое спасибо, что помогли разобраться с cardElement! Я теперь понял, как это должно работать :)
 initialCards.forEach((item) => {
   renderCard(item, "append");
 });

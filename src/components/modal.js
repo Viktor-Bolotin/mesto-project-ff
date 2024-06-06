@@ -1,7 +1,8 @@
+import { clearValidation, validationConfig } from "./validation";
+
 export const page = document.querySelector(".page");
 export const popups = Array.from(document.querySelectorAll(".popup"));
 
-// Функции открытия и закрытия попапов
 export function openPopup(popup) {
   popup.classList.add("popup_is-opened");
   page.addEventListener("mousedown", closePopupForOverlay);
@@ -26,4 +27,10 @@ export function closePopupForEscape(evt) {
   if (evt.key === "Escape") {
     closePopup();
   }
+}
+
+export function clearPopup(form) {
+  form.reset();
+  clearValidation(form, validationConfig);
+  closePopup();
 }

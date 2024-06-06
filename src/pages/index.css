@@ -11,3 +11,70 @@
 @import url('../blocks/popup/_is-animated/popup_is-animated.css');
 @import url('../blocks/popup/_is-opened/popup_is-opened.css');
 
+.form__field {
+  position: relative;
+  margin-block: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form__input-error {
+  font-size: 12px;
+  color: red;
+  width: 100%;
+  position: absolute;
+  top: 49px;
+  vertical-align: bottom;
+  z-index: 2;
+}
+
+.form__input_type_error {
+  border-bottom-color: red;
+}
+
+.button__inactive {
+  background-color: white;
+  outline: 1px solid #C4C4C4;
+  color: #C4C4C4;
+  cursor: default;
+}
+
+.button__inactive:hover {
+  background-color: white;
+  outline: 1px solid #C4C4C4;
+  color: #C4C4C4;
+  cursor: default;
+}
+
+.card__like-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  caret-color: transparent;
+}
+
+.card__like-quantity {
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.profile__image:hover::after {
+  content: '';
+  background-color: rgb(0 0 0 / 0.8);
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background-image: url(../images/avatar-edit.svg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  caret-color: transparent;
+}
+
+.profile__image {
+  caret-color: transparent;
+}

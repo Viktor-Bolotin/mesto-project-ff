@@ -1,18 +1,36 @@
-import { deleteFunc, sentlikeCard, sentDeleteLikeCard, apiConfig } from "./api";
+import { sentLikeCard, sentDeleteLikeCard } from "./api";
 import { openPopup } from "./modal";
 
 // Выбор функции обработки лайка для отправки на сервер
 function toggleLikeStatus(button, cardId, card) {
-  if (button.classList.contains("card__like-button_is-active")) {
-    sentlikeCard(cardId, card);
+  if (!button.classList.contains("card__like-button_is-active")) {
+    sentLikeCard(cardId)
+      .then((data) => {
+        button.classList.add("card__like-button_is-active");
+        updateLikeQuantity(data.likes.length, card);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
-    sentDeleteLikeCard(cardId, card);
+    sentDeleteLikeCard(cardId)
+      .then((data) => {
+        button.classList.remove("card__like-button_is-active");
+        updateLikeQuantity(data.likes.length, card);
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
   }
+}
+
+function updateLikeQuantity(figure, card) {
+  card.querySelector(".card__like-quantity").textContent = figure;
 }
 
 // Обработчик нажатия на кнопку лайка
 export function likeCard(button) {
-  button.classList.toggle("card__like-button_is-active");
   const card = button.closest(".card");
   const cardId = card.getAttribute("data-card-id");
   toggleLikeStatus(button, cardId, card);
@@ -34,7 +52,7 @@ export function handleImageClick(item) {
 export const cardTemplate = document.querySelector("#card-template").content;
 export const cardSection = document.querySelector(".places__list");
 
-export function createCard(item, deleteFunc, likeCard, handleImageClick) {
+export function createCard(item, likeCard, handleImageClick, idCurrentUser) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
@@ -51,7 +69,7 @@ export function createCard(item, deleteFunc, likeCard, handleImageClick) {
     deleteButton.addEventListener("click", function (evt) {
       const deleteCard = evt.target.closest(".card");
       const cardId = deleteCard.getAttribute("data-card-id");
-      openPopupTypeDelete(deleteCard, cardId)
+      openPopupTypeDelete(deleteCard, cardId);
     });
   } else {
     deleteButton.remove();
@@ -59,11 +77,7 @@ export function createCard(item, deleteFunc, likeCard, handleImageClick) {
 
   const cardLikes = item.likes;
   const hasMyLike = cardLikes.some((like) => {
-    if (like._id == `${apiConfig.myId}`) {
-      return true;
-    } else {
-      return false;
-    }
+    like._id == idCurrentUser;
   });
 
   const likeButton = cardElement.querySelector(".card__like-button");
@@ -71,11 +85,7 @@ export function createCard(item, deleteFunc, likeCard, handleImageClick) {
     likeCard(likeButton);
   });
 
-  if (hasMyLike) {
-    likeButton.classList.add("card__like-button_is-active");
-  } else {
-    likeButton.classList.remove("card__like-button_is-active");
-  }
+  likeButton.classList.toggle("card__like-button_is-active", hasMyLike);
 
   cardImage.addEventListener("click", () => handleImageClick(item));
 
@@ -83,19 +93,26 @@ export function createCard(item, deleteFunc, likeCard, handleImageClick) {
 }
 
 // Добавление карточек на страницу
-export function renderCard(item, method = "append") {
-  const cardElement = createCard(item, deleteFunc, likeCard, handleImageClick);
+export function renderCard(item, method = "append", idCurrentUser) {
+  const cardElement = createCard(
+    item,
+    likeCard,
+    handleImageClick,
+    idCurrentUser
+  );
   cardSection[method](cardElement);
 }
 
 // Попап удаления
-export const popupTypeDelete = document.querySelector('.popup_type_delete-card')
-const deleteCardButton = popupTypeDelete.querySelector('.popup__button')
+export const popupTypeDelete = document.querySelector(
+  ".popup_type_delete-card"
+);
 
+export let cardToDelete;
+export let cardToDeleteId;
 
 function openPopupTypeDelete(card, id) {
   openPopup(popupTypeDelete);
-  deleteCardButton.addEventListener('click', function() {
-    deleteFunc(card, id)
-  })
+  cardToDelete = card;
+  cardToDeleteId = id;
 }

@@ -1,12 +1,3 @@
-export const validationConfig = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "button__inactive",
-  inputErrorClass: "form__input_type_error",
-  errorClass: "form__input-error_active",
-};
-
 export function showInputError(
   formElement,
   inputElement,
@@ -26,6 +17,11 @@ export function hideInputError(formElement, inputElement, validationConfig) {
   errorElement.textContent = "";
 }
 
+function disableSubmitButton(button, validationConfig) {
+  button.setAttribute("disabled", "");
+  button.classList.add(validationConfig.inactiveButtonClass);
+}
+
 export function checkInputPattern(inputElement) {
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -34,7 +30,7 @@ export function checkInputPattern(inputElement) {
   }
 }
 
-export function isValid(formElement, inputElement) {
+export function isValid(formElement, inputElement, validationConfig) {
   checkInputPattern(inputElement);
   if (!inputElement.validity.valid) {
     showInputError(
@@ -56,8 +52,7 @@ export function hasInvalideInput(inputs) {
 
 export function toggleButtonState(inputs, button, validationConfig) {
   if (hasInvalideInput(inputs)) {
-    button.setAttribute("disabled", "");
-    button.classList.add(validationConfig.inactiveButtonClass);
+    disableSubmitButton(button, validationConfig);
   } else {
     button.removeAttribute("disabled", "");
     button.classList.remove(validationConfig.inactiveButtonClass);
@@ -74,7 +69,7 @@ export function setInputValidation(formElement, validationConfig) {
 
   formElementInputs.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
-      isValid(formElement, inputElement);
+      isValid(formElement, inputElement, validationConfig);
       toggleButtonState(formElementInputs, buttonSubmit, validationConfig);
     });
   });
@@ -95,8 +90,7 @@ export function clearValidation(formElement, validationConfig) {
   const buttonSubmit = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
-  buttonSubmit.setAttribute("disabled", "");
-  buttonSubmit.classList.add(validationConfig.inactiveButtonClass);
+  disableSubmitButton(buttonSubmit, validationConfig);
   inputs.forEach((input) => {
     hideInputError(formElement, input, validationConfig);
   });

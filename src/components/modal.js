@@ -1,4 +1,4 @@
-import { clearValidation, validationConfig } from "./validation";
+import { clearValidation } from "./validation";
 
 export const page = document.querySelector(".page");
 export const popups = Array.from(document.querySelectorAll(".popup"));
@@ -29,7 +29,7 @@ export function closePopupForEscape(evt) {
   }
 }
 
-export function clearPopup(form) {
+export function clearAndClosePopup(form, validationConfig) {
   form.reset();
   clearValidation(form, validationConfig);
   closePopup();
